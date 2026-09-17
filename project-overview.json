@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0",
+  "project": {
+    "name": "Surveyor Infrastructure Dashboard",
+    "summary": "A private, self-hosted dashboard for monitoring virtualization, storage, sensors, networks, and selected external data.",
+    "deployment_scope": "private_network",
+    "documentation_profile": "sanitized_external_review",
+    "license": null
+  },
+  "status": {
+    "stage": "operational_pre_publication",
+    "core_dashboard": "active",
+    "history_collection": "active",
+    "alerting": "active",
+    "health_watchdog": "active",
+    "network_watchdog": "active",
+    "automatic_backups": "active",
+    "host_firewall": "active",
+    "https": "optional_not_configured",
+    "application_login": "optional_not_configured",
+    "disaster_recovery_clone": "planned"
+  },
+  "runtime": {
+    "language": "Python",
+    "web_framework": "FastAPI",
+    "application_server": "Uvicorn",
+    "reverse_proxy": "Nginx",
+    "database": "SQLite",
+    "service_manager": "systemd",
+    "firewall": "nftables",
+    "frontend": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Canvas"
+    ]
+  },
+  "components": [
+    {
+      "id": "overview",
+      "purpose": "Summarize infrastructure health and current utilization.",
+      "data_classification": "operational"
+    },
+    {
+      "id": "virtualization_adapter",
+      "purpose": "Read node, guest, and storage telemetry through an audit-only token.",
+      "data_classification": "private_infrastructure"
+    },
+    {
+      "id": "network_adapter",
+      "purpose": "Observe configured devices and discover hosts on approved subnets.",
+      "data_classification": "private_infrastructure"
+    },
+    {
+      "id": "history_store",
+      "purpose": "Persist bounded telemetry for graphing and trend analysis.",
+      "data_classification": "operational"
+    },
+    {
+      "id": "alert_engine",
+      "purpose": "Evaluate availability, temperature, memory, storage, and guest-state conditions.",
+      "data_classification": "operational"
+    },
+    {
+      "id": "miner_adapter",
+      "purpose": "Display miner telemetry and public-chain wallet totals without treating shares as coins.",
+      "data_classification": "financial_identifier_private"
+    },
+    {
+      "id": "external_data",
+      "purpose": "Provide weather and market information independently of core health.",
+      "data_classification": "external"
+    },
+    {
+      "id": "health_watchdog",
+      "purpose": "Check critical endpoints and perform one controlled recovery restart.",
+      "data_classification": "operational"
+    },
+    {
+      "id": "network_watchdog",
+      "purpose": "Compare observed network membership with an approved baseline.",
+      "data_classification": "private_infrastructure"
+    },
+    {
+      "id": "backup_service",
+      "purpose": "Create, validate, retain, and expire SQLite backups.",
+      "data_classification": "sensitive_operational"
+    }
+  ],
+  "pages": [
+    "overview",
+    "virtualization",
+    "sensors",
+    "storage",
+    "network",
+    "history",
+    "weather",
+    "markets",
+    "miner",
+    "alerts"
+  ],
+  "security_controls": {
+    "unprivileged_service_account": true,
+    "read_only_application_filesystem": true,
+    "dedicated_writable_data_directory": true,
+    "loopback_application_binding": true,
+    "reverse_proxy_security_headers": true,
+    "ssh_key_authentication_only": true,
+    "ssh_forwarding_disabled": true,
+    "network_allowlist": true,
+    "audit_only_virtualization_token": true,
+    "forced_command_monitoring_keys": true,
+    "protected_environment_file": true,
+    "automatic_verified_backups": true
+  },
+  "data_retention": {
+    "telemetry": "bounded_by_configured_policy",
+    "backups": "bounded_by_configured_policy",
+    "network_baseline": "retained_until_operator_update"
+  },
+  "external_dependencies": [
+    {
+      "category": "weather",
+      "failure_impact": "weather_page_only"
+    },
+    {
+      "category": "market_data",
+      "failure_impact": "markets_page_only"
+    },
+    {
+      "category": "public_blockchain_data",
+      "failure_impact": "wallet_totals_unavailable"
+    }
+  ],
+  "privacy": {
+    "contains_real_credentials": false,
+    "contains_real_addresses": false,
+    "contains_real_hostnames": false,
+    "contains_wallet_identifier": false,
+    "contains_personal_location": false,
+    "redactions": [
+      "operator identity",
+      "host and device names",
+      "usernames",
+      "IPv4 and IPv6 addresses",
+      "network ranges",
+      "API credentials",
+      "SSH material",
+      "wallet identifier",
+      "precise weather location"
+    ]
+  },
+  "publication_blockers": [
+    "Remove access keys and known-host material from the working source tree and Git history.",
+    "Move all remaining installation-specific constants into environment configuration.",
+    "Replace live databases, logs, and API captures with synthetic fixtures.",
+    "Confirm redistribution rights for background artwork.",
+    "Select a software license.",
+    "Run secret scanning across the complete repository history."
+  ],
+  "next_steps": [
+    "Reorganize deployment files into a conventional public repository structure.",
+    "Add automated unit and integration tests.",
+    "Document and test full backup restoration.",
+    "Optionally configure trusted internal HTTPS and authentication.",
+    "Create and verify a powered-off disaster-recovery clone."
+  ]
+}
